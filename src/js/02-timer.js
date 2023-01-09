@@ -6,8 +6,7 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  minDate: 'today',
-
+  // minDate: 'today',
   onClose(selectedDates) {
     console.log(selectedDates[0]);
   },
@@ -15,10 +14,11 @@ const options = {
 
 const instance = flatpickr('#datetime-picker', options);
 const DEFAULTDAY = instance.config.defaultDate.getTime();
+
 const refs = {
   startBtn: document.querySelector('[data-start]'),
 };
-console.dir(instance);
+
 refs.startBtn.setAttribute('disabled', true);
 
 instance.config.onChange.push(function (selectedDates, dateStr, instance) {
@@ -26,7 +26,6 @@ instance.config.onChange.push(function (selectedDates, dateStr, instance) {
 
   if (SELECTEDDAYS < DEFAULTDAY) {
     alert('Please choose a date in the future');
-    return;
   }
   if (SELECTEDDAYS > DEFAULTDAY)
     refs.startBtn.removeAttribute('disabled', true);
