@@ -25,14 +25,17 @@ function onCreatePromiseHandleButton(e) {
       clearInterval(intervalId);
       return;
     }
-    step += Number(formValue.delay) + Number(formValue.step);
-    createPromise(count, step).then(success).catch(error);
+    step += Number(formValue.step);
+
+    createPromise(count, Number(formValue.delay), step)
+      .then(success)
+      .catch(error);
   }, Number(formValue.step));
 
   refs.formEl.reset();
 }
 
-function createPromise(position, delay) {
+function createPromise(position, delay, step) {
   count += 1;
 
   return new Promise((resolve, reject) => {
@@ -40,9 +43,9 @@ function createPromise(position, delay) {
 
     setTimeout(() => {
       if (shouldResolve) {
-        resolve(`✅ Fulfilled promise ${position} in ${delay}ms`);
+        resolve(`✅ Fulfilled promise ${position} in ${step}ms`);
       } else {
-        reject(`❌ Rejected promise ${position} in ${delay}ms`);
+        reject(`❌ Rejected promise ${position} in ${step}ms`);
       }
     }, delay);
   });
