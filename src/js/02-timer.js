@@ -3,72 +3,49 @@ import 'flatpickr/dist/flatpickr.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const options = {
-  enableTime: false,
-  // enableTime: true,
-
+  enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  // minDate: 'today',
+  // ! minDate: 'today',
   onClose(selectedDates) {
     // console.log(selectedDates[0]);
   },
 };
 
 const instance = flatpickr('#datetime-picker', options);
-const DEFAULTDAY = instance.config.defaultDate.getTime();
-console.log(DEFAULTDAY);
-let SELECTEDDAYS = 0;
+const DEFAULTTIME = instance.config.now.getTime();
 
 const refs = {
   startBtn: document.querySelector('[data-start]'),
 };
 
 refs.startBtn.setAttribute('disabled', true);
+
 refs.startBtn.addEventListener('click', onStartTimer);
 
-instance.config.onChange.push(function (selectedDates, dateStr, instance) {
-  const SELECTEDDAYS = selectedDates[0].getTime();
-  console.log(SELECTEDDAYS);
+function onStartTimer() {}
 
-  if (SELECTEDDAYS > DEFAULTDAY) {
+instance.config.onClose.push(function (selectedDates) {
+  let choseTime = selectedDates[0].getTime();
+
+  if (DEFAULTTIME < choseTime) {
     refs.startBtn.removeAttribute('disabled', true);
   } else {
     refs.startBtn.setAttribute('disabled', true);
     Notify.success('Please choose a date in the future');
   }
 
-  const retailTime = SELECTEDDAYS - DEFAULTDAY;
-  console.log(retailTime);
-  const { days, hours, minutes, seconds } = convertMs(retailTime);
+  let differenceTime = choseTime - DEFAULTTIME;
 
-  console.log(`${seconds}:${minutes}:${hours}:${days}`);
+  // const intervalID = setInterval(() => {
+  //   differenceTime -= 1000;
+
+  //   console.log(convertMs(differenceTime));
+  // }, 1000);
 });
 
-// console.log(SELECTEDDAYS - DEFAULTDAY);
-
-function onStartTimer() {
-  timer.start();
-}
-
-const timer = {
-  start() {
-    // const startTime = Date.now();
-
-    const intervslId = setInterval(() => {
-      // const currentTime = Date.now();
-      const retailTime = SELECTEDDAYS - DEFAULTDAY;
-      console.log(retailTime);
-      const { days, hours, minutes, seconds } = convertMs(retailTime);
-
-      console.log(`${seconds}`);
-    }, 1000);
-  },
-
-  stop() {
-    clearInterval(intervslId);
-  },
-};
+console.log(instance.config.onClose);
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
